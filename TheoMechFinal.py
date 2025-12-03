@@ -57,12 +57,19 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1):
     ax[1].yaxis.set_label_position('right')
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m}, \tilde A = {A}, \tilde L ={L} = 1$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'm-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.savefig(f'plots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
 
 
 # %%
 
-
+tlist = np.linspace(0,np.pi/2, 10)
+dtlist = np.linspace(0,np.pi/2, 10)
+tL, dtL = np.meshgrid(tlist, dtlist)
+tL = np.ravel(tL)
+dtL = np.ravel(dtL)
+for i in range(len(tL)):
+    print(i)
+    plotIC(tL[i], dtL[i], 100)
 
 
 # %%
