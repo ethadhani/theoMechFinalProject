@@ -46,21 +46,22 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1):
     time = np.linspace(0, tau_max, 1000)
     solution = solve_ivp(ELE, (0, tau_max), (0, np.pi/6), args = (L, A, m), t_eval = time, max_step=1e-2)
     dthetas, thetas = solution.y
-    fig, ax = plt.subplots(1,2)
+    fig, ax = plt.subplots(1,2, figsize=(8,4), tight_layout=True)
     ax[0].plot(time, thetas)
     ax[0].set_xlabel(r'$\tau$ (dimensionless time)')
     ax[0].set_ylabel(r'$\tilde\theta$ ("dimensionless" angle)')
     ax[1].plot(thetas, dthetas)
-    ax[1].set_xlabel(r'$\tidle\theta$')
+    ax[1].set_xlabel(r'$\tilde\theta$')
     ax[1].set_ylabel(r'$\dot{\tilde{\theta}}$')
+    ax[1].set_aspect('equal')
+    ax[1].yaxis.set_label_position('right')
 
-    fig.suptitle(rf"$\theta$ over time for $\tilde{m} = \tilde{A} = \tilde{L} = 1$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-
-    # fig.savefig('test.png')
+    fig.suptitle(rf"$\theta$ over time for $\tilde m = {m}, \tilde A = {A}, \tilde L ={L} = 1$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
+    fig.savefig(f'm-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
 
 
 # %%
-plotIC(0, np.pi/6, 100)
+
 
 
 
