@@ -53,25 +53,25 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1):
     ax[1].plot(thetas, dthetas)
     ax[1].set_xlabel(r'$\tilde\theta$')
     ax[1].set_ylabel(r'$\dot{\tilde{\theta}}$')
-    ax[1].set_aspect('equal')
+    ax[1].set_xlim(xmin=-1*(np.pi/2 + 0.1), xmax=np.pi/2 + 0.1)
     ax[1].yaxis.set_label_position('right')
 
-    fig.suptitle(rf"$\theta$ over time for $\tilde m = {m}, \tilde A = {A}, \tilde L ={L} = 1$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'plots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.suptitle(rf"$\theta$ over time for $\tilde m = {m:.2f}, \tilde A = {A:.2f}, \tilde L ={L:.2f}$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
+    fig.savefig(f'plots2/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
     plt.close('all')
 
 
 
 # %%
 
-tlist = np.linspace(0,np.pi/2, 10)
-dtlist = np.linspace(0,np.pi/2, 10)
-tL, dtL = np.meshgrid(tlist, dtlist)
-tL = np.ravel(tL)
-dtL = np.ravel(dtL)
-for i in range(len(tL)):
+Alist = np.linspace(0.01,2, 10)
+Llist = np.linspace(0.01,2, 10)
+AL, LL = np.meshgrid(Alist, Llist)
+AL = np.ravel(AL)
+LL = np.ravel(LL)
+for i in range(len(AL)):
     print(i)
-    plotIC(tL[i], dtL[i], 100)
+    plotIC(0, np.pi/4, 100, L=LL[i], A=AL[i])
 
 
 # %%
