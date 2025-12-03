@@ -58,6 +58,8 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1):
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m}, \tilde A = {A}, \tilde L ={L} = 1$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
     fig.savefig(f'plots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    plt.close('all')
+
 
 
 # %%
