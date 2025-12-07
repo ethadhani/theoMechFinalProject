@@ -42,39 +42,53 @@ def ELE(tau, X, L, A, m):
     return [ddtheta, dtheta]
 
 # %%
-def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1):
-    time = np.linspace(0, tau_max, 1000)
-    solution = solve_ivp(ELE, (0, tau_max), (0, np.pi/6), args = (L, A, m), t_eval = time, max_step=1e-2)
-    dthetas, thetas = solution.y
+def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    # print(timePhase)
+    timePos = np.linspace(0, tau_max//10, 1000)
+    # print(time)
+    solution = solve_ivp(ELE, (0, tau_max), (dthetaZero, thetaZero), args = (L, A, m), dense_output=True, max_step=max_step)
+    dthetasPhase, thetasPhase = solution.sol(timePhase)
+    dthetasPos, thetasPos = solution.sol(timePos)
+
+    thetasPos = np.mod(thetasPos + np.pi, 2 * np.pi) - np.pi
+    thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+
+
     fig, ax = plt.subplots(1,2, figsize=(8,4), tight_layout=True)
-    ax[0].plot(time, thetas)
+    ax[0].plot(timePos, thetasPos)
     ax[0].set_xlabel(r'$\tau$ (dimensionless time)')
     ax[0].set_ylabel(r'$\tilde\theta$ ("dimensionless" angle)')
-    ax[1].plot(thetas, dthetas)
+    ax[1].scatter(thetasPhase, dthetasPhase, s=1)
     ax[1].set_xlabel(r'$\tilde\theta$')
     ax[1].set_ylabel(r'$\dot{\tilde{\theta}}$')
     ax[1].set_xlim(xmin=-1*(np.pi/2 + 0.1), xmax=np.pi/2 + 0.1)
+    # ax[1].set_xlim(xmin=-0.1, xmax=np.pi*2 + 0.1)
+
     ax[1].yaxis.set_label_position('right')
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m:.2f}, \tilde A = {A:.2f}, \tilde L ={L:.2f}$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'plots2/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.savefig(f'plots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
     plt.close('all')
 
 
 
 # %%
 
-Alist = np.linspace(0.01,2, 10)
-Llist = np.linspace(0.01,2, 10)
-AL, LL = np.meshgrid(Alist, Llist)
-AL = np.ravel(AL)
-LL = np.ravel(LL)
-for i in range(len(AL)):
-    print(i)
-    plotIC(0, np.pi/4, 100, L=LL[i], A=AL[i])
+# Alist = np.linspace(0.01,2, 10)
+# Llist = np.linspace(0.01,2, 10)
+# AL, LL = np.meshgrid(Alist, Llist)
+# AL = np.ravel(AL)
+# LL = np.ravel(LL)
+# for i in range(len(AL)):
+#     print(i)
+#     plotIC(0, np.pi/4, 100, L=LL[i], A=AL[i])
 
 
 # %%
+plotIC(0.0015, 0, 5000, L=2, A=2, tauSlice = 0)
 
 
 
+
+# %%
