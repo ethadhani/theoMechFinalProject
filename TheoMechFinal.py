@@ -70,32 +70,34 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
     ax[1].yaxis.set_label_position('right')
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m:.2f}, \tilde A = {A:.2f}, \tilde L ={L:.2f}$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'paramPlots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.savefig(f'APlots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
     plt.close('all')
 
 
 
 # %%
 
-Alist = np.linspace(0.01,2, 10)
-Llist = np.linspace(0.01,2, 10)
-AL, LL = np.meshgrid(Alist, Llist)
-AL = np.ravel(AL)
-LL = np.ravel(LL)
-IC = np.zeros((AL.size,2))
-IC[:,0] = LL
-IC[:,1] = AL
+# Mlist = np.linspace(0.01,2, 10)
+# TList = np.linspace(np.pi/4 - 0.5, np.pi/4 + 0.5, 10)
+# ML, TL = np.meshgrid(Mlist, TList)
+# ML = np.ravel(ML)
+# TL = np.ravel(TL)
+# IC = np.zeros((ML.size,2))
+# IC[:,0] = ML
+# IC[:,1] = TL
 
 def helper(IC):
-    plotIC(np.pi/4, 0, 1000, L=IC[0], A=IC[1])
+    print(f"A={IC}")
+    plotIC(np.pi/4, 0, 1000, A=IC)
 
 # for i in range(len(AL)):
 #     print(i)
 #     plotIC(np.pi/4, 0, 1000, L=LL[i], A=AL[i])
 
 if __name__ == "__main__":
+    masses = [1,2,3,4,5,6,7,8,9,10,11,12]
     with Pool() as pool:
-        features = pool.map(helper,IC)
+        features = pool.map(helper,masses)
         pool.close()
         pool.join()
 
