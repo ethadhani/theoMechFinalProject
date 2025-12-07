@@ -70,7 +70,7 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
     ax[1].yaxis.set_label_position('right')
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m:.2f}, \tilde A = {A:.2f}, \tilde L ={L:.2f}$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'APlots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.savefig(f'thetaPlots/thetaZero_{thetaZero}_m-{m}_L-{L}_A-{A}_dthetaZero_{dthetaZero}.pdf')
     plt.close('all')
 
 
@@ -87,15 +87,15 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
 # IC[:,1] = TL
 
 def helper(IC):
-    print(f"A={IC}")
-    plotIC(np.pi/4, 0, 1000, A=IC)
+    print(f"mass={IC}")
+    plotIC(np.pi/4, 0, 1000, m =IC)
 
 # for i in range(len(AL)):
 #     print(i)
 #     plotIC(np.pi/4, 0, 1000, L=LL[i], A=AL[i])
 
 if __name__ == "__main__":
-    masses = [1,2,3,4,5,6,7,8,9,10,11,12]
+    masses = np.linspace(100,1000, 5)
     with Pool() as pool:
         features = pool.map(helper,masses)
         pool.close()
