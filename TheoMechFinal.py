@@ -19,6 +19,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy.integrate import solve_ivp
 from numpy import sin, cos
+import sys
+from multiprocessing import Pool
 
 # %% [markdown]
 # We can rewrite this as $$\tilde{\ddot\theta}= \frac{\tilde{m}\tilde{L} \tilde{A}^2 \sin^2(\tau) \sin(\tilde\theta)\cos(\tilde\theta) + 2\tilde{L} \tilde{\dot\theta}^2 \sin(\tilde\theta)\cos(\tilde\theta) - \sin(\tilde\theta)(\tilde{m} + 1)  - 4\tilde{L}\tilde{\dot\theta}^2\sin(\tilde\theta)\cos(\tilde\theta)}{\tilde{m}\tilde{L}  +  2\tilde{L}\sin^2(\tilde\theta) }$$
@@ -68,25 +70,37 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
     ax[1].yaxis.set_label_position('right')
 
     fig.suptitle(rf"$\theta$ over time for $\tilde m = {m:.2f}, \tilde A = {A:.2f}, \tilde L ={L:.2f}$ and $\theta(0) = {thetaZero:.2f}, \dot\theta(0) = {dthetaZero:.2f}$")
-    fig.savefig(f'plots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
+    fig.savefig(f'paramPlots/m-{m}_L-{L}_A-{A}_thetaZero_{thetaZero}_dthetaZero_{dthetaZero}.pdf')
     plt.close('all')
 
 
 
 # %%
 
-# Alist = np.linspace(0.01,2, 10)
-# Llist = np.linspace(0.01,2, 10)
-# AL, LL = np.meshgrid(Alist, Llist)
-# AL = np.ravel(AL)
-# LL = np.ravel(LL)
+Alist = np.linspace(0.01,2, 10)
+Llist = np.linspace(0.01,2, 10)
+AL, LL = np.meshgrid(Alist, Llist)
+AL = np.ravel(AL)
+LL = np.ravel(LL)
+IC = np.zeros((AL.size,2))
+IC[:,0] = LL
+IC[:,1] = AL
+
+def helper(IC):
+    plotIC(np.pi/4, 0, 1000, L=IC[0], A=IC[1])
+
 # for i in range(len(AL)):
 #     print(i)
-#     plotIC(0, np.pi/4, 100, L=LL[i], A=AL[i])
+#     plotIC(np.pi/4, 0, 1000, L=LL[i], A=AL[i])
 
+if __name__ == "__main__":
+    with Pool() as pool:
+        features = pool.map(helper,IC)
+        pool.close()
+        pool.join()
 
 # %%
-plotIC(0.0015, 0, 5000, L=2, A=2, tauSlice = 0)
+# plotIC(0.0015, 0, 5000, L=2, A=2, tauSlice = 0)
 
 
 
