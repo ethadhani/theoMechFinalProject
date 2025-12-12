@@ -77,33 +77,6 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
 
 # %%
 
-def plotDtheta(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
-    dthetaList = np.linspace(min,max, 8)
-    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
-    numPoints = timePhase.size
-    print(numPoints)
-    #dtPlotPoints = np.zeros((numPoints))
-    #tPlotPoints = np.zeros((numPoints))
-    dtPlotPoints = []
-    tPlotPoints = []
-    for i,dt in enumerate(dthetaList): 
-        print(i)
-    # print(time)
-        solution = solve_ivp(ELE, (0, tau_max), (dt, thetaZero), args = (L, A, m), dense_output=True, max_step=max_step)
-        dthetasPhase, thetasPhase = solution.sol(timePhase)
-        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
-        dtPlotPoints.append(dthetasPhase)
-        tPlotPoints.append(thetasPhase)
-
-    fig, ax = plt.subplots()
-    for i in range(dthetaList.size):
-        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'$\dot{{\tilde{{\theta}}}} = $ {dthetaList[i]:.1f}')
-        ax.set_xlabel(r'$\tilde\theta$')
-        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
-    ax.legend()
-    fig.savefig(f'dtSurfaceSection.pdf')
-    plt.close('all')
-
 
 def plotDtheta(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
     dthetaList = np.linspace(min,max, 8)
@@ -131,6 +104,64 @@ def plotDtheta(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2
     ax.legend()
     fig.savefig(f'dtSurfaceSection.pdf')
     plt.close('all')
+
+
+def plottheta(min,max, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    thetaList = np.linspace(min,max, 15)
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    numPoints = timePhase.size
+    print(numPoints)
+    #dtPlotPoints = np.zeros((numPoints))
+    #tPlotPoints = np.zeros((numPoints))
+    dtPlotPoints = []
+    tPlotPoints = []
+    for i,theta in enumerate(thetaList): 
+        print(i)
+    # print(time)
+        solution = solve_ivp(ELE, (0, tau_max), (dthetaZero , theta), args = (L, A, m), dense_output=True, max_step=max_step)
+        dthetasPhase, thetasPhase = solution.sol(timePhase)
+        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+        dtPlotPoints.append(dthetasPhase)
+        tPlotPoints.append(thetasPhase)
+
+    fig, ax = plt.subplots()
+    for i in range(thetaList.size):
+        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'${{\tilde{{\theta}}}} = $ {thetaList[i]:.1f}')
+        ax.set_xlabel(r'$\tilde\theta$')
+        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
+    # ax.legend()
+    fig.savefig(f'thetaSurfaceSection.pdf')
+    plt.close('all')
+
+
+def plotAtheta(thetaZero, dthetaZero, min,max,tau_max, L = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    A = np.linspace(min,max, 3) 
+    A = np.concat([A,[5]])
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    numPoints = timePhase.size
+    print(numPoints)
+    #dtPlotPoints = np.zeros((numPoints))
+    #tPlotPoints = np.zeros((numPoints))
+    dtPlotPoints = []
+    tPlotPoints = []
+    for i,aa in enumerate(A): 
+        print(i)
+    # print(time)
+        solution = solve_ivp(ELE, (0, tau_max), (dthetaZero , thetaZero), args = (L,aa, m), dense_output=True, max_step=max_step)
+        dthetasPhase, thetasPhase = solution.sol(timePhase)
+        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+        dtPlotPoints.append(dthetasPhase)
+        tPlotPoints.append(thetasPhase)
+
+    fig, ax = plt.subplots()
+    for i in range(A.size):
+        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'$A= $ {A[i]:.1f}')
+        ax.set_xlabel(r'$\tilde\theta$')
+        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
+    ax.legend()
+    fig.savefig(f'AaaSurfaceOfSections.pdf')
+    plt.close('all')
+
 
 # Tlist = np.linspace(np.pi/4 - 0.5,np.pi/4 + 0.5, 10)
 ICList = np.linspace(0.0,3, 50)
@@ -161,7 +192,7 @@ def helper(IC):
 
 # plotIC(np.pi/4, 0, 1000, L=1, A=1)
 
-plotDtheta(np.pi/4, 0,2.5, 2000)
+plotAtheta(np.pi/4, 0, 0.2 ,6, 2000)
 
 
 # %%
