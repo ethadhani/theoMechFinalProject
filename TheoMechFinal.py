@@ -77,6 +77,86 @@ def plotIC(thetaZero, dthetaZero, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2,
 
 # %%
 
+def plotDtheta(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    dthetaList = np.linspace(min,max, 8)
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    numPoints = timePhase.size
+    print(numPoints)
+    #dtPlotPoints = np.zeros((numPoints))
+    #tPlotPoints = np.zeros((numPoints))
+    dtPlotPoints = []
+    tPlotPoints = []
+    for i,dt in enumerate(dthetaList): 
+        print(i)
+    # print(time)
+        solution = solve_ivp(ELE, (0, tau_max), (dt, thetaZero), args = (L, A, m), dense_output=True, max_step=max_step)
+        dthetasPhase, thetasPhase = solution.sol(timePhase)
+        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+        dtPlotPoints.append(dthetasPhase)
+        tPlotPoints.append(thetasPhase)
+
+    fig, ax = plt.subplots()
+    for i in range(dthetaList.size):
+        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'$\dot{{\tilde{{\theta}}}} = $ {dthetaList[i]:.1f}')
+        ax.set_xlabel(r'$\tilde\theta$')
+        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
+    ax.legend()
+    fig.savefig(f'dtSurfaceSection.pdf')
+    plt.close('all')
+
+def plotMassRatio(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    massList = np.linspace(min,max, 8)
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    numPoints = timePhase.size
+    print(numPoints)
+    #dtPlotPoints = np.zeros((numPoints))
+    #tPlotPoints = np.zeros((numPoints))
+    dtPlotPoints = []
+    tPlotPoints = []
+    for i,mass in enumerate(massList): 
+        print("mass = ", mass)
+    # print(time)
+        solution = solve_ivp(ELE, (0, tau_max), (0, thetaZero), args = (L, A, mass), dense_output=True, max_step=max_step)
+        dthetasPhase, thetasPhase = solution.sol(timePhase)
+        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+        dtPlotPoints.append(dthetasPhase)
+        tPlotPoints.append(thetasPhase)
+
+    fig, ax = plt.subplots()
+    for i in range(massList.size):
+        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'$\tilde m = $ {massList[i]:.2f}')
+        ax.set_xlabel(r'$\tilde\theta$')
+        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
+    ax.legend()
+    fig.savefig(f'massSurfaceSection.pdf')
+    plt.close('all')
+
+def plotLRatio(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
+    LList = np.linspace(min,max, 8)
+    timePhase = np.arange(0, tau_max // (2*np.pi)) * np.pi * 2 + tauSlice #np.linspace(0, tau_max, 1000)
+    numPoints = timePhase.size
+    print(numPoints)
+    #dtPlotPoints = np.zeros((numPoints))
+    #tPlotPoints = np.zeros((numPoints))
+    dtPlotPoints = []
+    tPlotPoints = []
+    for i,ourL in list(enumerate(LList)) + [(9,1)]: 
+        print("L = ", ourL)
+    # print(time)
+        solution = solve_ivp(ELE, (0, tau_max), (0, thetaZero), args = (ourL, A, m), dense_output=True, max_step=max_step)
+        dthetasPhase, thetasPhase = solution.sol(timePhase)
+        thetasPhase= np.mod(thetasPhase + np.pi, 2 * np.pi) - np.pi
+        dtPlotPoints.append(dthetasPhase)
+        tPlotPoints.append(thetasPhase)
+
+    fig, ax = plt.subplots()
+    for i in range(LList.size):
+        ax.scatter(tPlotPoints[i], dtPlotPoints[i], s=2, label =fr'$\tilde L = $ {LList[i]:.2f}')
+        ax.set_xlabel(r'$\tilde\theta$')
+        ax.set_ylabel(r'$\dot{\tilde{\theta}}$')
+    ax.legend()
+    fig.savefig(f'LSurfaceSection.pdf')
+    plt.close('all')
 
 def plotDtheta(thetaZero, min,max, tau_max, L = 1, A = 1, m = 1, max_step = 1e-2, tauSlice = 0):
     dthetaList = np.linspace(min,max, 8)
@@ -193,6 +273,9 @@ def helper(IC):
 # plotIC(np.pi/4, 0, 1000, L=1, A=1)
 
 plotAtheta(np.pi/4, 0, 0.2 ,6, 2000)
+plotMassRatio(np.pi/4, 0.1,2, 2000)
+# plotLRatio(np.pi/4, 0.6,1.4, 2000)
+
 
 
 # %%
